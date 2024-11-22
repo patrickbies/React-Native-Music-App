@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { defaultStyles } from "@/constants/Styles";
 import { Colors } from "@/constants/Colors";
 import {
@@ -13,7 +13,8 @@ import {
 } from "phosphor-react-native";
 import ScrollText from "../text/ScrollText";
 import * as Haptics from "expo-haptics";
-
+import Sheet from "../sheet/Sheet";
+import ProgressBar from "./ProgressBar";
 
 type PostFooter = {
   paused: boolean;
@@ -36,6 +37,8 @@ const PostFooter = ({
   saved,
   setSaved,
 }: PostFooter) => {
+  const [shareOpen, setShareOpen] = useState(false);
+
   return (
     <View style={styles.container}>
       <View style={styles.highContainer}>
@@ -47,24 +50,36 @@ const PostFooter = ({
           <Text style={defaultStyles.usernameText}>Artist Name</Text>
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => {
-            setLiked(!liked)
-            Haptics.selectionAsync()
-          }}>
-            <Heart weight="fill" size={34} color={liked ? "#ff3729" : "white"} />
+          <TouchableOpacity
+            onPress={() => {
+              setLiked(!liked);
+              Haptics.selectionAsync();
+            }}
+          >
+            <Heart
+              weight="fill"
+              size={34}
+              color={liked ? "#ff3729" : "white"}
+            />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {
-            setSaved(!saved)
-            Haptics.selectionAsync()
-          }}>
-            <BookmarkSimple weight="fill" size={34} color={saved ? "#F5D51E" : "white"} />
+          <TouchableOpacity
+            onPress={() => {
+              setSaved(!saved);
+              Haptics.selectionAsync();
+            }}
+          >
+            <BookmarkSimple
+              weight="fill"
+              size={34}
+              color={saved ? "#F5D51E" : "white"}
+            />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => setShareOpen(true)}>
             <ShareFat weight="fill" size={34} color="white" />
           </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.progressbar}></View>
+      <ProgressBar />
       <View style={styles.controller}>
         <Text style={styles.songTime}>0:00</Text>
         <View
@@ -94,6 +109,14 @@ const PostFooter = ({
         </View>
         <Text style={styles.songTime}>0:30</Text>
       </View>
+      <Sheet
+        base_height={0.3}
+        open={shareOpen}
+        orientation="bottom"
+        setOpen={setShareOpen}
+      >
+        <Text>Share</Text>
+      </Sheet>
     </View>
   );
 };
@@ -119,14 +142,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-  },
-  progressbar: {
-    marginVertical: "5%",
-    backgroundColor: Colors.borderColor,
-    opacity: 0.8,
-    borderRadius: 100,
-    width: "100%",
-    height: "2%",
   },
   controller: {
     flexDirection: "row",
