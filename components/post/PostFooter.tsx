@@ -13,8 +13,8 @@ import {
 } from "phosphor-react-native";
 import ScrollText from "../text/ScrollText";
 import * as Haptics from "expo-haptics";
-import Sheet from "../sheet/Sheet";
 import ProgressBar from "./ProgressBar";
+import Sheet from "../sheet/Sheet";
 
 type PostFooter = {
   duration: number;

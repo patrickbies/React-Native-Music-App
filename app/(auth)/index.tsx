@@ -13,9 +13,15 @@ import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/constants/Styles";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Href, router } from "expo-router";
+import { useSignUp } from "@clerk/clerk-expo";
 
 const Index = () => {
   const [emailAddress, setEmailAddress] = useState<string>('');
+  const {signUp} = useSignUp()
+
+  const continueWithEmail = () => {
+    router.navigate(`/(createaccount)/${emailAddress}` as Href);
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -71,7 +77,7 @@ const Index = () => {
             />
           </View>
           <TouchableOpacity
-            onPress={() => router.navigate(`/(createaccount)/${emailAddress}` as Href)}
+            onPress={() => continueWithEmail()}
           >
             <View style={[styles.buttonContainer, styles.buttonStylesFilled]}>
               <View />

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import {
   TextInput,
   Button,
@@ -7,117 +7,64 @@ import {
   ScrollView,
   Text,
   Image,
+  TouchableOpacity,
 } from "react-native";
 import { useSignUp } from "@clerk/clerk-expo";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { defaultStyles } from "@/constants/Styles";
+import { Eye, EyeSlash } from "phosphor-react-native";
 
-const EmailVerify = () => {
+const ConfirmPassword = () => {
   const { isLoaded, signUp, setActive } = useSignUp();
-  const router = useRouter();
 
   const { email: emailAddress } = useLocalSearchParams<{ email: string }>();
-  const [password, setPassword] = React.useState("");
-  const [pendingVerification, setPendingVerification] = React.useState(false);
-  const [code, setCode] = React.useState("");
-
-  const onSignUpPress = async () => {
-    if (!isLoaded) {
-      return;
-    }
-
-    try {
-      await signUp.create({
-        emailAddress,
-        password,
-      });
-
-      await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-
-      setPendingVerification(true);
-    } catch (err: any) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
-    }
-  };
-
-  const onPressVerify = async () => {
-    if (!isLoaded) {
-      return;
-    }
-
-    try {
-      const completeSignUp = await signUp.attemptEmailAddressVerification({
-        code,
-      });
-
-      if (completeSignUp.status === "complete") {
-        await setActive({ session: completeSignUp.createdSessionId });
-        router.replace("/");
-      } else {
-        console.error(JSON.stringify(completeSignUp, null, 2));
-      }
-    } catch (err: any) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
-    }
-  };
+  const [password, setPassword] = useState("");
+  const [shown, setShown] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.mainContainer}>
           <View style={{ gap: 10 }}>
-            <TextInput
-              autoCapitalize="none"
-              autoCorrect={false}
-              enterKeyHint="done"
-              placeholderTextColor={"#ccc"}
-              style={[defaultStyles.displaynameText]}
-              placeholder="Enter your name..."
-            />
-            <TextInput
-              autoCapitalize="none"
-              autoCorrect={false}
-              enterKeyHint="done"
-              placeholderTextColor={"#ccc"}
-              style={[defaultStyles.usernameText]}
-              placeholder="@username..."
-            />
-          </View>
-          <View style={{ gap: 10 }}>
-            <Text style={defaultStyles.pTextLS}>Password</Text>
-            <TextInput
-              autoCapitalize="none"
-              autoCorrect={false}
-              enterKeyHint="done"
-              secureTextEntry
-              style={[
-                styles.buttonContainer,
-                styles.buttonStylesOutline,
-                defaultStyles.pTextLS,
-              ]}
-              placeholder="Enter your password"
-            />
-          </View>
-          <View style={{ gap: 10 }}>
-            <Text style={defaultStyles.pTextLS}>Confirm Password</Text>
-            <TextInput
-              autoCapitalize="none"
-              autoCorrect={false}
-              enterKeyHint="done"
-              secureTextEntry
-              style={[
-                styles.buttonContainer,
-                styles.buttonStylesOutline,
-                defaultStyles.pTextLS,
-              ]}
-              placeholder="Confirm your password"
-            />
+            <Text style={defaultStyles.pTextLS}>Password *</Text>
+            <View style={[styles.buttonContainer, styles.buttonStylesOutline, {overflow: 'hidden'}]}>
+              <TextInput
+                autoCapitalize="none"
+                autoCorrect={false}
+                enterKeyHint="done"
+                secureTextEntry={!shown}
+                style={[{ flex: 1, padding: "4%" }, defaultStyles.pTextLS]}
+                placeholder="Enter your password"
+                value={password}
+                onChangeText={(e) => setPassword(e)}
+              />
+              <TouchableOpacity
+                onPress={() => setShown(!shown)}
+                style={{
+                  backgroundColor: Colors.selected,
+                  borderColor: Colors.borderColor,
+                  borderLeftWidth: StyleSheet.hairlineWidth,
+                  height: "100%",
+                  width: "15%",
+                }}
+              >
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {shown ? (
+                    <Eye color={Colors.backgroundColor} weight="fill" />
+                  ) : (
+                    <EyeSlash color={Colors.backgroundColor} weight="fill" />
+                  )}
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
           <View style={styles.line} />
         </View>
@@ -126,7 +73,7 @@ const EmailVerify = () => {
   );
 };
 
-export default EmailVerify;
+export default ConfirmPassword;
 
 const styles = StyleSheet.create({
   container: {
@@ -141,7 +88,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
-    padding: "4%",
     justifyContent: "space-between",
     alignItems: "center",
     borderRadius: 10,
