@@ -59,10 +59,9 @@ export default function HomeLayout() {
         }}
         options={{
           title: "Upload",
-          tabBarButton: () => (
-            <TouchableOpacity style={{height: '100%', justifyContent: 'center', alignItems: 'center'}}>
-              <MusicNotesPlus size={40} weight="fill" color="white"  />
-            </TouchableOpacity>
+          tabBarLabel: () => null,
+          tabBarIcon: () => (
+            <MusicNotesPlus size={40} weight="fill" color="white"  />
           ),
         }}
       />

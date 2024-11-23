@@ -1,12 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
-  View,
-  Dimensions,
   StyleProp,
   TextStyle,
   ScrollView,
-  Text,
 } from "react-native";
 import Animated, {
   useSharedValue,

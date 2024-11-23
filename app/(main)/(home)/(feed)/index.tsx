@@ -1,4 +1,4 @@
-import { Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
+import { Dimensions, FlatList, StyleSheet, View } from "react-native";
 import React, { useState } from "react";
 import { Colors } from "@/constants/Colors";
 import PostFooter from "@/components/post/PostFooter";
@@ -12,6 +12,7 @@ const Feed = () => {
   const [index, setIndex] = useState(0);
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [time, setTime] = useState(0);
 
   return (
     <View style={styles.container}>
@@ -32,6 +33,9 @@ const Feed = () => {
         pagingEnabled
       />
       <PostFooter
+        time={time}
+        setTime={setTime}
+        duration={30}
         paused={paused}
         setPaused={setPaused}
         hasPrev={!!index}

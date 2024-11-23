@@ -17,6 +17,8 @@ import Sheet from "../sheet/Sheet";
 import ProgressBar from "./ProgressBar";
 
 type PostFooter = {
+  duration: number;
+  time: number;
   paused: boolean;
   hasPrev: boolean;
   hasNext: boolean;
@@ -25,17 +27,21 @@ type PostFooter = {
   setPaused: React.Dispatch<React.SetStateAction<boolean>>;
   setLiked: React.Dispatch<React.SetStateAction<boolean>>;
   setSaved: React.Dispatch<React.SetStateAction<boolean>>;
+  setTime: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const PostFooter = ({
+  duration,
+  time,
   paused,
-  setPaused,
   hasPrev,
   hasNext,
   liked,
-  setLiked,
   saved,
+  setLiked,
+  setPaused,
   setSaved,
+  setTime,
 }: PostFooter) => {
   const [shareOpen, setShareOpen] = useState(false);
 
@@ -79,35 +85,35 @@ const PostFooter = ({
           </TouchableOpacity>
         </View>
       </View>
-      <ProgressBar />
-      <View style={styles.controller}>
-        <Text style={styles.songTime}>0:00</Text>
-        <View
-          style={[styles.controller, { alignItems: "center", width: "55%" }]}
-        >
-          <TouchableOpacity>
-            <Rewind
-              size={35}
-              weight="fill"
-              color={hasPrev ? "white" : Colors.borderColor}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setPaused(!paused)}>
-            {paused ? (
-              <Play size={40} weight="fill" color="white" />
-            ) : (
-              <Pause size={40} weight="fill" color="white" />
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <FastForward
-              size={35}
-              weight="fill"
-              color={hasNext ? "white" : Colors.borderColor}
-            />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.songTime}>0:30</Text>
+      <ProgressBar
+        setPaused={setPaused}
+        paused={paused}
+        duration={duration}
+        setTime={setTime}
+        time={time}
+      />
+      <View style={[styles.controller, { alignSelf: "center", width: "55%" }]}>
+        <TouchableOpacity>
+          <Rewind
+            size={35}
+            weight="fill"
+            color={hasPrev ? "white" : Colors.borderColor}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setPaused(!paused)}>
+          {paused ? (
+            <Play size={40} weight="fill" color="white" />
+          ) : (
+            <Pause size={40} weight="fill" color="white" />
+          )}
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <FastForward
+            size={35}
+            weight="fill"
+            color={hasNext ? "white" : Colors.borderColor}
+          />
+        </TouchableOpacity>
       </View>
       <Sheet
         base_height={0.3}
@@ -146,10 +152,5 @@ const styles = StyleSheet.create({
   controller: {
     flexDirection: "row",
     justifyContent: "space-between",
-  },
-  songTime: {
-    color: Colors.borderColor,
-    top: 0,
-    fontSize: 10,
   },
 });

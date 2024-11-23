@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import { Colors } from '@/constants/Colors'
 
 const EditSong = () => {
   return (
-    <View>
+    <View style={styles.container}>
       <Text>EditSong</Text>
     </View>
   )
@@ -11,4 +12,9 @@ const EditSong = () => {
 
 export default EditSong
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.backgroundColor
+  }
+})

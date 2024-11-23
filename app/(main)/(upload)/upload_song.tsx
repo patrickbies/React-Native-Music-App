@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import { Colors } from '@/constants/Colors'
 
 const UploadSong = () => {
   return (
-    <View>
+    <View style={styles.container}>
       <Text>UploadSong</Text>
     </View>
   )
@@ -11,4 +12,9 @@ const UploadSong = () => {
 
 export default UploadSong
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.backgroundColor
+  }
+})
