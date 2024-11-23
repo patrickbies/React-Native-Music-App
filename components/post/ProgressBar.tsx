@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import { Colors } from "@/constants/Colors";
 import Animated, {
@@ -12,8 +12,11 @@ import {
 } from "react-native-gesture-handler";
 
 const ProgressBar = () => {
+  const {width : screenWidth} = Dimensions.get('screen')
   const [totalWidth, setTotalWidth] = useState(0);
   const barWidth = useSharedValue(0);
+
+  const left = 
 
   const gesturePan = Gesture.Pan()
     .minDistance(1)
