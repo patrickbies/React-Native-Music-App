@@ -3,20 +3,24 @@ import { Colors } from "@/constants/Colors";
 import * as Haptics from "expo-haptics";
 import { Text, TouchableOpacity, View } from "react-native";
 import { defaultStyles } from "@/constants/Styles";
-import { House, MagnifyingGlass, MusicNotesPlus, User, Waveform, WaveSine } from "phosphor-react-native"
+import { CaretDown, GearSix, House, MagnifyingGlass, MusicNotesPlus, User, Waveform, WaveSine } from "phosphor-react-native"
+import { useAuth } from "@clerk/clerk-expo";
 
 export default function HomeLayout() {
+  const {signOut} = useAuth();
+
   return (
     <Tabs
       screenOptions={{
         headerShadowVisible: false,
         headerStyle: { backgroundColor: Colors.backgroundColor },
         headerTitleStyle: { display: "none" },
+        tabBarInactiveTintColor: Colors.unselected,
+        tabBarActiveTintColor: Colors.selected,
         tabBarStyle: {
           backgroundColor: Colors.backgroundColor,
           borderColor: Colors.borderColor,
         },
-        tabBarActiveTintColor: "#fff",
       }}
     >
       <Tabs.Screen
@@ -33,7 +37,7 @@ export default function HomeLayout() {
               style={{ paddingHorizontal: "7%", paddingTop: "5%" }}
               onPress={() => router.navigate('(search)' as Href)}
             >
-              <MagnifyingGlass size={28} color={'white'} />
+              <MagnifyingGlass size={28} color={Colors.selected} />
             </TouchableOpacity>
           ),
           headerLeft: () => (
@@ -61,7 +65,7 @@ export default function HomeLayout() {
           title: "Upload",
           tabBarLabel: () => null,
           tabBarIcon: () => (
-            <MusicNotesPlus size={40} weight="fill" color="white"  />
+            <MusicNotesPlus size={40} weight="fill" color={Colors.selected}  />
           ),
         }}
       />
@@ -74,6 +78,18 @@ export default function HomeLayout() {
         }}
         options={{
           title: "Profile",
+          headerLeftContainerStyle: {paddingLeft: '5%'},
+          headerRightContainerStyle: {paddingRight: '5%'},
+          headerTransparent: true,
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => signOut()} style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
+              <Text style={[defaultStyles.displaynameText, {fontSize: 24}]}>username</Text>
+              <CaretDown size={20} color="white"/>
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <GearSix weight="fill" size={25} color="white"/>
+          ),
           tabBarIcon: ({ size, color, focused }) => (
             <User size={size} color={color} weight={!focused ? 'regular' : 'fill'}/>
           ),

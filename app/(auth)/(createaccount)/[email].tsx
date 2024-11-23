@@ -71,28 +71,23 @@ const EmailVerify = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.mainContainer}>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <View style={{ gap: 10 }}>
-              <TextInput
-                autoCapitalize="none"
-                autoCorrect={false}
-                enterKeyHint="done"
-                placeholderTextColor={"#ccc"}
-                style={[defaultStyles.displaynameText]}
-                placeholder="Enter your name..."
-              />
-              <TextInput
-                autoCapitalize="none"
-                autoCorrect={false}
-                enterKeyHint="done"
-                placeholderTextColor={"#ccc"}
-                style={[defaultStyles.usernameText]}
-                placeholder="@username..."
-              />
-            </View>
-            <Image />
+          <View style={{ gap: 10 }}>
+            <TextInput
+              autoCapitalize="none"
+              autoCorrect={false}
+              enterKeyHint="done"
+              placeholderTextColor={"#ccc"}
+              style={[defaultStyles.displaynameText]}
+              placeholder="Enter your name..."
+            />
+            <TextInput
+              autoCapitalize="none"
+              autoCorrect={false}
+              enterKeyHint="done"
+              placeholderTextColor={"#ccc"}
+              style={[defaultStyles.usernameText]}
+              placeholder="@username..."
+            />
           </View>
           <View style={{ gap: 10 }}>
             <Text style={defaultStyles.pTextLS}>Password</Text>

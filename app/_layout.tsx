@@ -1,17 +1,32 @@
-import { Slot } from "expo-router";
+import { router, Slot, useSegments } from "expo-router";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
-import { ClerkProvider } from "@clerk/clerk-expo";
+import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { LogBox } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { LoadingProvider } from "@/context/LoadingContext";
 import LoadingOverlay from "@/components/loading/LoadingOverlay";
 import { setStatusBarStyle, StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
 });
 
 const InitialLayout = () => {
+  const {isSignedIn, isLoaded} = useAuth();
+  const segments = useSegments();
+
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    const inMain = segments[0] == '(main)'
+    if (isSignedIn && !inMain) { 
+      router.replace('/(main)/(home)/(feed)')
+    } else if (!isSignedIn && inMain) {
+      router.replace('/(auth)')
+    }
+  }, [isSignedIn])
+
   return <Slot />;
 };
 
