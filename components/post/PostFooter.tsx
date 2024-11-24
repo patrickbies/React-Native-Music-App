@@ -65,7 +65,7 @@ const PostFooter = ({
             <Heart
               weight="fill"
               size={34}
-              color={liked ? "#ff3729" : "white"}
+              color={liked ? Colors.red : Colors.selected}
             />
           </TouchableOpacity>
           <TouchableOpacity
@@ -77,11 +77,11 @@ const PostFooter = ({
             <BookmarkSimple
               weight="fill"
               size={34}
-              color={saved ? "#F5D51E" : "white"}
+              color={saved ? Colors.yellow : Colors.selected}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setShareOpen(true)}>
-            <ShareFat weight="fill" size={34} color="white" />
+            <ShareFat weight="fill" size={34} color={Colors.selected} />
           </TouchableOpacity>
         </View>
       </View>
@@ -97,21 +97,21 @@ const PostFooter = ({
           <Rewind
             size={35}
             weight="fill"
-            color={hasPrev ? "white" : Colors.borderColor}
+            color={hasPrev ? Colors.selected : Colors.borderColor}
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setPaused(!paused)}>
           {paused ? (
-            <Play size={40} weight="fill" color="white" />
+            <Play size={40} weight="fill" color={Colors.selected} />
           ) : (
-            <Pause size={40} weight="fill" color="white" />
+            <Pause size={40} weight="fill" color={Colors.selected}/>
           )}
         </TouchableOpacity>
         <TouchableOpacity>
           <FastForward
             size={35}
             weight="fill"
-            color={hasNext ? "white" : Colors.borderColor}
+            color={hasNext ? Colors.selected : Colors.borderColor}
           />
         </TouchableOpacity>
       </View>

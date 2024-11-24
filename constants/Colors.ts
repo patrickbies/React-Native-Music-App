@@ -3,5 +3,8 @@ export const Colors = {
   borderColor: '#666',
   highlight: '#7AE582',
   selected: '#fff',
-  unselected: '#ccc'
+  unselected: '#ccc',
+  red: "#ff3729",
+  green: "green",
+  yellow: "#F5D51E",
 };

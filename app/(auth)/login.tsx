@@ -11,7 +11,6 @@ import {
   Image,
 } from "react-native";
 import React from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/constants/Styles";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -52,7 +51,7 @@ const LoginPage = () => {
   }, [isLoaded, emailAddress, password]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.mainContainer}>
           <Text style={defaultStyles.h1TextL}>Log in to Sonundra</Text>
@@ -138,7 +137,7 @@ const LoginPage = () => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
