@@ -80,15 +80,8 @@ export default function HomeLayout() {
           title: "Profile",
           headerLeftContainerStyle: {paddingLeft: '5%'},
           headerRightContainerStyle: {paddingRight: '5%'},
-          headerTransparent: true,
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => signOut()} style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
-              <Text style={[defaultStyles.displaynameText, {fontSize: 24}]}>username</Text>
-              <CaretDown size={20} color="white"/>
-            </TouchableOpacity>
-          ),
           headerRight: () => (
-            <GearSix weight="fill" size={25} color="white"/>
+            <GearSix weight="fill" size={25} color={Colors.unselected}/>
           ),
           tabBarIcon: ({ size, color, focused }) => (
             <User size={size} color={color} weight={!focused ? 'regular' : 'fill'}/>

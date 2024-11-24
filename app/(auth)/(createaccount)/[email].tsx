@@ -14,14 +14,22 @@ import { useSignUp } from "@clerk/clerk-expo";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/constants/Styles";
-import { Eye, EyeSlash } from "phosphor-react-native";
+import {
+  Eye,
+  EyeSlash,
+  ImageSquare,
+  PencilSimple,
+} from "phosphor-react-native";
 import { api } from "@/convex/_generated/api";
 import { useConvex } from "convex/react";
+import { useLoading } from "@/context/LoadingContext";
+import { useUID } from "@/context/UIDContext";
 
 const ConfirmPassword = () => {
-  const buttonPadding = Dimensions.get('screen').width * 0.04;
+  const buttonPadding = Dimensions.get("screen").width * 0.04;
 
   const conv = useConvex();
+  const { showLoading, hideLoading } = useLoading();
   const { isLoaded, signUp, setActive } = useSignUp();
   const { email: emailAddress } = useLocalSearchParams<{ email: string }>();
 
@@ -42,46 +50,64 @@ const ConfirmPassword = () => {
       username: username,
     });
     setUsernameValid(q ? 1 : -1);
+
+    return q ? 1 : -1;
+  };
+
+  const createAccount = async () => {
+    const _finalUsernameCheck = await handleUsernameEnter();
+
+    if (_finalUsernameCheck != 1) return alert("Invalid Username");
+    if (!displayname.length) return alert("Please enter a display name");
+    if (!isLoaded) return;
+
+    showLoading();
+
+    try {
+      await signUp.create({
+        emailAddress,
+        password,
+      });
+
+      if (signUp.status == "complete" && signUp.createdUserId != null) {
+        console.log("Signed in");
+        const _UID = await conv.mutation(api.tasks.createAccount, {
+          displayName: displayname,
+          email: emailAddress,
+          username: username,
+          clerkId: signUp.createdUserId,
+        });
+        setActive({ session: signUp.createdSessionId });
+      } else {
+        console.log("not signed in");
+      }
+    } catch (err: any) {
+      console.error(JSON.stringify(err, null, 2));
+    }
+
+    hideLoading();
   };
 
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.mainContainer}>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              gap: 10,
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-            }}
-          >
-            <View style={{ gap: 10, width: '60%' }}>
-              <Text style={defaultStyles.pTextLS}>Display Name</Text>
-              <TextInput
-                maxLength={16}
-                autoCapitalize="none"
-                autoCorrect={false}
-                enterKeyHint="done"
-                style={[
-                  styles.buttonContainer,
-                  styles.buttonStylesOutline,
-                  defaultStyles.pTextLS,
-                  { padding: buttonPadding },
-                ]}
-                placeholder="Enter your Name"
-                value={displayname}
-                onChangeText={(e) => setDisplayname(e)}
-              />
-            </View>
-            <View
-              style={{
-                backgroundColor: Colors.borderColor,
-                width: "30%",
-                borderRadius: 100,
-                aspectRatio: 1,
-              }}
+          <View style={{ gap: 10 }}>
+            <Text style={defaultStyles.pTextLS}>Display Name</Text>
+            <TextInput
+              maxLength={16}
+              autoCapitalize="none"
+              autoCorrect={false}
+              enterKeyHint="done"
+              style={[
+                styles.buttonContainer,
+                styles.buttonStylesOutline,
+                defaultStyles.pTextLS,
+                { padding: buttonPadding },
+              ]}
+              placeholder="Enter your Name"
+              value={displayname}
+              onChangeText={(e) => setDisplayname(e)}
             />
           </View>
           <View style={{ gap: 10 }}>
@@ -128,7 +154,10 @@ const ConfirmPassword = () => {
                 autoCorrect={false}
                 enterKeyHint="done"
                 secureTextEntry={!shown}
-                style={[{ flex: 1, padding: buttonPadding }, defaultStyles.pTextLS]}
+                style={[
+                  { flex: 1, padding: buttonPadding },
+                  defaultStyles.pTextLS,
+                ]}
                 placeholder="Enter your password"
                 value={password}
                 onChangeText={(e) => setPassword(e)}
@@ -160,7 +189,7 @@ const ConfirmPassword = () => {
             </View>
           </View>
           <View style={styles.line} />
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity onPress={() => createAccount()}>
             <View
               style={[
                 styles.buttonContainer,

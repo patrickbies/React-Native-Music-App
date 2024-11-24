@@ -19,6 +19,12 @@ export const defaultStyles = StyleSheet.create({
     fontSize: 14,
     color: 'black'
   },
+  pTextM: {
+    fontWeight: '500',
+    fontFamily: 'Inter',
+    fontSize: 14,
+    color: '#ccc'
+  },
   pTextLS: {
     fontWeight: '400',
     fontFamily: 'Inter',

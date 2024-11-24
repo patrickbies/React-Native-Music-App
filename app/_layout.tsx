@@ -7,25 +7,30 @@ import { LoadingProvider } from "@/context/LoadingContext";
 import LoadingOverlay from "@/components/loading/LoadingOverlay";
 import { setStatusBarStyle, StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { UIDProvider, useUID } from "@/context/UIDContext";
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
 });
 
 const InitialLayout = () => {
-  const {isSignedIn, isLoaded} = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
   const segments = useSegments();
+
+  useEffect(() => {
+    setStatusBarStyle("light");
+  }, [isLoaded]);
 
   useEffect(() => {
     if (!isLoaded) return;
 
-    const inMain = segments[0] == '(main)'
-    if (isSignedIn && !inMain) { 
-      router.replace('/(main)/(home)/(feed)')
+    const inMain = segments[0] == "(main)";
+    if (isSignedIn && !inMain) {
+      router.replace("/(main)/(home)/(feed)");
     } else if (!isSignedIn && inMain) {
-      router.replace('/(auth)')
+      router.replace("/(auth)");
     }
-  }, [isSignedIn])
+  }, [isSignedIn]);
 
   return <Slot />;
 };
@@ -63,15 +68,15 @@ export default function RootLayout() {
     throw new Error("Add EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY to your .env file");
   }
 
-  setStatusBarStyle('light');
-
   return (
     <LoadingProvider>
       <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
         <ConvexProvider client={convex}>
-          <StatusBar style="light" />
-          <LoadingOverlay />
-          <InitialLayout />
+          <UIDProvider>
+            <StatusBar style="light" />
+            <LoadingOverlay />
+            <InitialLayout />
+          </UIDProvider>
         </ConvexProvider>
       </ClerkProvider>
     </LoadingProvider>

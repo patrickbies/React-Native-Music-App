@@ -6,9 +6,11 @@ export default defineSchema({
     username: v.string(),
     displayName: v.string(),
     email: v.string(),
-    profilePictureUrl: v.string(),
+    profilePictureUrl: v.optional(v.string()),
     createdAt: v.number(),
+    clerkId: v.string(),
   })
+    .index("by_clerk", ["clerkId"])
     .index("by_username", ["username"]), // for username check
   user_relationships: defineTable({
     followerId: v.id("users"), 
