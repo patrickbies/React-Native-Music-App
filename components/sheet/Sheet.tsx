@@ -15,7 +15,6 @@ import Animated, {
 import { opacity } from "react-native-reanimated/lib/typescript/Colors";
 
 type SheetProps = {
-  blur: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
   base_height: number;
@@ -26,7 +25,6 @@ type SheetProps = {
 const { height: screenHeight, width: screenWidth } = Dimensions.get("screen");
 
 const Sheet = ({
-  blur = false,
   setOpen,
   open,
   base_height,

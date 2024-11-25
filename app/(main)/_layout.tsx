@@ -16,6 +16,10 @@ export default function MainLayout() {
         name="(search)/index"
       />
       <Stack.Screen
+        name="(pages)/(profile)/[clerkId]"
+        options={{headerShown: true, headerTitle: '', headerBackButtonDisplayMode: 'minimal'}}
+      />
+      <Stack.Screen
         name="(upload)/edit_song"
         options={{
           headerShown: true,

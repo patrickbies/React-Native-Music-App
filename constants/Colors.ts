@@ -10,4 +10,5 @@ export const Colors = {
   darkHighlight: '#333',
   blue: "#428DFF",
   lightBg: '#222',
+  lightgrey: '#aaa'
 };

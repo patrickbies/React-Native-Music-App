@@ -9,43 +9,45 @@ import {
 import React, { useEffect, useState } from "react";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/constants/Styles";
-import { useUID } from "@/context/UIDContext";
-import { useNavigation } from "expo-router";
-import { CaretDown, UserCircle } from "phosphor-react-native";
-import { useAuth } from "@clerk/clerk-expo";
+import { router, useLocalSearchParams, useNavigation, } from "expo-router";
+import { UserCircle } from "phosphor-react-native";
 import { Image } from "expo-image";
 import ProfileTabs from "@/components/profile/ProfileTabs";
-import Sheet from "@/components/sheet/Sheet";
+import { useConvex } from "convex/react";
+import { useLoading } from "@/context/LoadingContext";
+import { api } from "@/convex/_generated/api";
 
 const buttonPadding = Dimensions.get("screen").width * 0.04;
 
 const Profile = () => {
-  const { userData } = useUID();
-  const { signOut } = useAuth();
+  const {clerkId: userId} = useLocalSearchParams<{ clerkId: string }>();
+  const conv = useConvex();
+  const {showLoading, hideLoading} = useLoading();
+  const [userData, setUserData] = useState<typeof api.tasks.queryUser._returnType[0]>();
   const nav = useNavigation();
 
-  const [profileChangeSheet, setProfileChangeSheet] = useState(false);
+  const grabProfile = async () => {
+    if (!userId) {
+      console.error("Invalid clerkId. Redirecting...");
+      router.back();
+      return;
+    }
+  
+    const data = await conv.query(api.tasks.queryUser, { uid: userId });
+  
+    if (!data.length) {
+      console.warn("No user found. Redirecting...");
+      router.back();
+      return;
+    }
+  
+    setUserData(data[0]);
+  };
 
   useEffect(() => {
-    nav.setOptions({
-      headerLeft: () => (
-        <TouchableOpacity
-          onPress={() => setProfileChangeSheet(true)}
-          style={{ flexDirection: "row", gap: 5, alignItems: "center" }}
-        >
-          <Text
-            style={[
-              defaultStyles.displaynameText,
-              { fontSize: 22, color: Colors.unselected },
-            ]}
-          >
-            {userData?.username}
-          </Text>
-          <CaretDown size={20} color="white" />
-        </TouchableOpacity>
-      ),
-    });
-  }, [nav, userData?.username]);
+    showLoading();
+    grabProfile().then(() => hideLoading());
+  }, [userId])
 
   return (
     <ScrollView style={styles.container} stickyHeaderIndices={[1]}>
@@ -61,9 +63,14 @@ const Profile = () => {
             <Image source={userData.profilePictureUrl} />
           )}
         </View>
+        <View style={{alignItems: 'center', gap: 5}}>
         <Text style={[defaultStyles.displaynameText, { fontSize: 22 }]}>
           {userData?.displayName}
         </Text>
+        <Text style={[defaultStyles.usernameText]}>
+          @{userData?.username}
+        </Text>
+        </View>
         <View
           style={{
             paddingVertical: "2%",
@@ -93,8 +100,8 @@ const Profile = () => {
           }}
         >
           <TouchableOpacity style={{ width: "47.5%" }} onPress={() => {}}>
-            <View style={[styles.buttonContainer, styles.buttonStylesFilled]}>
-              <Text style={defaultStyles.pTextD}>Edit Profile</Text>
+            <View style={[styles.buttonContainer, {backgroundColor: Colors.blue}]}>
+              <Text style={defaultStyles.pTextL}>Follow</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={{ width: "47.5%" }} onPress={() => {}}>
@@ -105,29 +112,6 @@ const Profile = () => {
         </View>
       </View>
       <ProfileTabs />
-      <Sheet
-        orientation="bottom"
-        base_height={0.2}
-        open={profileChangeSheet}
-        setOpen={setProfileChangeSheet}
-      >
-        <View>
-          <TouchableOpacity
-            style={[
-              styles.buttonContainer,
-              styles.buttonStylesFilled,
-              {
-                margin: "5%",
-              },
-            ]}
-            onPress={() => signOut()}
-          >
-            <Text style={defaultStyles.pTextD}>
-              Sign out of @{userData?.username}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </Sheet>
     </ScrollView>
   );
 };

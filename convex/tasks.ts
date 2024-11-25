@@ -17,7 +17,7 @@ export const createAccount = mutation({
     username: v.string(),
     displayName: v.string(),
     email: v.string(),
-    clerkId: v.string()
+    clerkId: v.string(),
   },
   handler: async (ctx, args) => {
     const newUserId = await ctx.db.insert("users", {
@@ -25,7 +25,7 @@ export const createAccount = mutation({
       displayName: args.displayName,
       email: args.email,
       username: args.username,
-      clerkId: args.clerkId
+      clerkId: args.clerkId,
     });
 
     return newUserId;
@@ -34,10 +34,30 @@ export const createAccount = mutation({
 
 export const queryUser = query({
   args: {
-    uid: v.string()
+    uid: v.string(),
   },
   handler: async (ctx, args) => {
-    const userData = await ctx.db.query("users").withIndex("by_clerk", q => q.eq("clerkId", args.uid)).collect();
+    const userData = await ctx.db
+      .query("users")
+      .withIndex("by_clerk", (q) => q.eq("clerkId", args.uid))
+      .collect();
     return userData;
-  }
+  },
+});
+
+export const searchBar = query({
+  args: {
+    searchTerm: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // Search `users` table for username and displayName
+    const userResults = await ctx.db
+      .query("users")
+      .withSearchIndex("search_username", (q) =>
+        q.search("username", args.searchTerm)
+      )
+      .collect();
+
+    return userResults;
+  },
 });

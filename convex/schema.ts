@@ -10,6 +10,8 @@ export default defineSchema({
     createdAt: v.number(),
     clerkId: v.string(),
   })
+    .searchIndex("search_username", {searchField:"username"})
+    .searchIndex("search_displayName", {searchField:"displayName"})
     .index("by_clerk", ["clerkId"])
     .index("by_username", ["username"]), // for username check
   user_relationships: defineTable({
@@ -21,12 +23,14 @@ export default defineSchema({
     .index("followerId", ["followerId"]), // Fetch user being followed
   posts: defineTable({
     userId: v.id("users"),
-    content: v.string(),
+    gifBackground: v.boolean(),
+    name: v.string(),
     mediaUrl: v.optional(v.string()),
     shares: v.number(),
     saves: v.number(),
     createdAt: v.number(), 
   })
+    .searchIndex("search_name", {searchField:"name"})
     .index("userId", ["userId"]),
   post_likes: defineTable({
     postId: v.id("posts"),
