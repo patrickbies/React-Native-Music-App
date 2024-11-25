@@ -14,14 +14,6 @@ export default function MainLayout() {
     >
       <Stack.Screen
         name="(search)/index"
-        options={{
-          headerShown: true,
-          headerBackButtonDisplayMode: "minimal",
-          headerTitle: '',
-          headerSearchBarOptions: {
-            
-          }
-        }}
       />
       <Stack.Screen
         name="(upload)/edit_song"
@@ -33,7 +25,7 @@ export default function MainLayout() {
             <TouchableOpacity
               onPress={() => router.navigate("(upload)/upload_song" as Href)}
             >
-              <Text>Next</Text>
+              <Text style={{color: Colors.blue}}>Next</Text>
             </TouchableOpacity>
           ),
         }}
@@ -46,7 +38,7 @@ export default function MainLayout() {
           title: "Edit Post",
           headerRight: () => (
             <TouchableOpacity>
-              <Text>Post</Text>
+              <Text style={{color: Colors.blue}}>Post</Text>
             </TouchableOpacity>
           ),
         }}

@@ -1,5 +1,5 @@
 import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/constants/Styles";
 import { useUID } from "@/context/UIDContext";
@@ -8,6 +8,7 @@ import { CaretDown, UserCircle } from "phosphor-react-native";
 import { useAuth } from "@clerk/clerk-expo";
 import { Image } from "expo-image";
 import ProfileTabs from "@/components/profile/ProfileTabs";
+import Sheet from "@/components/sheet/Sheet";
 
 const buttonPadding = Dimensions.get('screen').width * 0.04;
 
@@ -16,11 +17,13 @@ const Profile = () => {
   const { signOut } = useAuth();
   const nav = useNavigation();
 
+  const [profileChangeSheet, setProfileChangeSheet] = useState(false);
+
   useEffect(() => {
     nav.setOptions({
       headerLeft: () => (
         <TouchableOpacity
-          onPress={() => signOut()}
+          onPress={() => setProfileChangeSheet(true)}
           style={{ flexDirection: "row", gap: 5, alignItems: "center" }}
         >
           <Text
@@ -38,7 +41,7 @@ const Profile = () => {
   }, [nav, userData?.username]);
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} stickyHeaderIndices={[1]}>
       <View style={styles.top}>
         <View style={styles.profileImage}>
           {userData?.profilePictureUrl == undefined ? (
@@ -91,6 +94,9 @@ const Profile = () => {
         </View>
       </View>
       <ProfileTabs />
+      <Sheet orientation="bottom" base_height={0.2} open={profileChangeSheet} setOpen={setProfileChangeSheet}>
+          <Text>OPEENE</Text>
+      </Sheet>
     </ScrollView>
   );
 };

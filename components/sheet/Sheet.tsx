@@ -12,8 +12,10 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { opacity } from "react-native-reanimated/lib/typescript/Colors";
 
 type SheetProps = {
+  blur: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
   base_height: number;
@@ -24,6 +26,7 @@ type SheetProps = {
 const { height: screenHeight, width: screenWidth } = Dimensions.get("screen");
 
 const Sheet = ({
+  blur = false,
   setOpen,
   open,
   base_height,
@@ -37,8 +40,6 @@ const Sheet = ({
 
   const animatedStyles = useAnimatedStyle(() => ({
     height: height.value,
-    transform:
-      orientation === "top" ? [{ translateY: -height.value }] : undefined,
   }));
 
   const close = () => {
@@ -91,7 +92,7 @@ const Sheet = ({
       animationType="none"
       onRequestClose={close}
     >
-      <View style={styles.fullScreen}>
+      <View style={styles.fullScreen} >
         <GestureHandlerRootView>
           <Pressable onPress={close} style={styles.fullScreen} />
           <GestureDetector gesture={pan}>

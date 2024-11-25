@@ -1,4 +1,4 @@
-import { router, Slot, useSegments } from "expo-router";
+import { router, Slot, SplashScreen, useSegments } from "expo-router";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { LogBox } from "react-native";
@@ -7,22 +7,22 @@ import { LoadingProvider } from "@/context/LoadingContext";
 import LoadingOverlay from "@/components/loading/LoadingOverlay";
 import { setStatusBarStyle, StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import { UIDProvider, useUID } from "@/context/UIDContext";
+import { UIDProvider } from "@/context/UIDContext";
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
 });
+
+SplashScreen.preventAutoHideAsync();
 
 const InitialLayout = () => {
   const { isSignedIn, isLoaded } = useAuth();
   const segments = useSegments();
 
   useEffect(() => {
-    setStatusBarStyle("light");
-  }, [isLoaded]);
-
-  useEffect(() => {
     if (!isLoaded) return;
+
+    setStatusBarStyle("light");
 
     const inMain = segments[0] == "(main)";
     if (isSignedIn && !inMain) {
@@ -30,7 +30,9 @@ const InitialLayout = () => {
     } else if (!isSignedIn && inMain) {
       router.replace("/(auth)");
     }
-  }, [isSignedIn]);
+
+    SplashScreen.hideAsync();
+  }, [isSignedIn, isLoaded]);
 
   return <Slot />;
 };
