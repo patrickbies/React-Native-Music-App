@@ -1,5 +1,6 @@
 import {
   Dimensions,
+  FlatList,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,11 +12,12 @@ import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/constants/Styles";
 import { useUID } from "@/context/UIDContext";
 import { useNavigation } from "expo-router";
-import { CaretDown, UserCircle } from "phosphor-react-native";
+import { CaretDown } from "phosphor-react-native";
 import { useAuth } from "@clerk/clerk-expo";
-import { Image } from "expo-image";
 import ProfileTabs from "@/components/profile/ProfileTabs";
 import Sheet from "@/components/sheet/Sheet";
+import ProfileHeader from "@/components/profile/ProfileHeader";
+import ProfilePage from "@/components/profile/ProfilePage";
 
 const buttonPadding = Dimensions.get("screen").width * 0.04;
 
@@ -25,8 +27,6 @@ const Profile = () => {
   const nav = useNavigation();
 
   const [profileChangeSheet, setProfileChangeSheet] = useState(false);
-
-  console.log(userData)
 
   useEffect(() => {
     nav.setOptions({
@@ -50,63 +50,8 @@ const Profile = () => {
   }, [nav, userData?.metadata?.username]);
 
   return (
-    <ScrollView style={styles.container} stickyHeaderIndices={[1]}>
-      <View style={styles.top}>
-        <View style={styles.profileImage}>
-          {userData?.metadata?.profilePictureUrl == undefined ? (
-            <UserCircle
-              size={"100%"}
-              color={Colors.borderColor}
-              weight="fill"
-            />
-          ) : (
-            <Image source={userData?.metadata?.profilePictureUrl} />
-          )}
-        </View>
-        <Text style={[defaultStyles.displaynameText, { fontSize: 22 }]}>
-          {userData?.metadata?.displayName}
-        </Text>
-        <View
-          style={{
-            paddingVertical: "2%",
-            flexDirection: "row",
-            width: "100%",
-            justifyContent: "space-between",
-          }}
-        >
-          <View style={{ alignItems: "center", width: "25%" }}>
-            <Text style={defaultStyles.pTextM}>Followers</Text>
-            <Text style={defaultStyles.pTextM}>0</Text>
-          </View>
-          <View style={{ alignItems: "center", width: "25%" }}>
-            <Text style={defaultStyles.pTextM}>Following</Text>
-            <Text style={defaultStyles.pTextM}>0</Text>
-          </View>
-          <View style={{ alignItems: "center", width: "25%" }}>
-            <Text style={defaultStyles.pTextM}>Streams</Text>
-            <Text style={defaultStyles.pTextM}>0</Text>
-          </View>
-        </View>
-        <View
-          style={{
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <TouchableOpacity style={{ width: "47.5%" }} onPress={() => {}}>
-            <View style={[styles.buttonContainer, styles.buttonStylesFilled]}>
-              <Text style={defaultStyles.pTextD}>Edit Profile</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={{ width: "47.5%" }} onPress={() => {}}>
-            <View style={[styles.buttonContainer, styles.buttonStylesFilled]}>
-              <Text style={defaultStyles.pTextD}>Share Profile</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-      <ProfileTabs posts={userData} />
+    <>
+      <ProfilePage userData={userData!} />
       <Sheet
         orientation="bottom"
         base_height={0.2}
@@ -130,30 +75,13 @@ const Profile = () => {
           </TouchableOpacity>
         </View>
       </Sheet>
-    </ScrollView>
+    </>
   );
 };
 
 export default Profile;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.backgroundColor,
-  },
-  top: {
-    paddingHorizontal: "5%",
-    paddingBottom: "2%",
-    alignItems: "center",
-    gap: 15,
-  },
-  profileImage: {
-    width: "30%",
-    aspectRatio: 1,
-    borderRadius: 100,
-    backgroundColor: Colors.darkHighlight,
-  },
-  bottom: {},
   buttonContainer: {
     flexDirection: "row",
     padding: buttonPadding,
