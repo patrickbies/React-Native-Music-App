@@ -7,6 +7,7 @@ export default defineSchema({
     displayName: v.string(),
     email: v.string(),
     profilePictureUrl: v.optional(v.string()),
+    profilePictureId: v.optional(v.string()),
     createdAt: v.number(),
     clerkId: v.string(),
   })
@@ -25,10 +26,12 @@ export default defineSchema({
     userId: v.id("users"),
     gifBackground: v.boolean(),
     name: v.string(),
-    mediaUrl: v.optional(v.string()),
+    mediaUrl: v.string(),
     shares: v.number(),
     saves: v.number(),
+    likes: v.number(),
     createdAt: v.number(), 
+    mediaId: v.string(),
   })
     .searchIndex("search_name", {searchField:"name"})
     .index("userId", ["userId"]),
@@ -45,4 +48,10 @@ export default defineSchema({
     content: v.string(),
     createdAt: v.number(),
   }).index("postId", ["postId"]),
+  search_keys: defineTable({
+    word: v.string(),
+    isPost: v.boolean(),
+    postId: v.optional(v.id('posts')),
+    userId: v.optional(v.id('users'))
+  }).searchIndex('by_content', {searchField: "word"}),
 });

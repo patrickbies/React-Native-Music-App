@@ -40,11 +40,6 @@ export default function MainLayout() {
           headerShown: true,
           headerBackButtonDisplayMode: "minimal",
           title: "Edit Post",
-          headerRight: () => (
-            <TouchableOpacity>
-              <Text style={{color: Colors.blue}}>Post</Text>
-            </TouchableOpacity>
-          ),
         }}
       />
     </Stack>

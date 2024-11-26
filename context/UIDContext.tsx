@@ -4,7 +4,7 @@ import { useQuery } from "convex/react";
 import React, { createContext, useContext, ReactNode } from "react";
 
 interface UIDContextProps {
-  userData: (typeof api.tasks.queryUser._returnType)[0] | undefined;
+  userData: (typeof api.tasks.queryUser._returnType) | undefined;
 }
 
 const UIDContext = createContext<UIDContextProps | null>(null);
@@ -16,7 +16,7 @@ interface UIDProviderProps {
 export const UIDProvider = ({ children }: UIDProviderProps) => {
   const { userId: uid } = useAuth();
   const ud_tmp = useQuery(api.tasks.queryUser, { uid: uid || "" });
-  const userData = uid && ud_tmp?.length ? ud_tmp[0] : undefined;
+  const userData = uid && ud_tmp ? ud_tmp : undefined;
 
   return (
     <UIDContext.Provider value={{ userData }}>{children}</UIDContext.Provider>

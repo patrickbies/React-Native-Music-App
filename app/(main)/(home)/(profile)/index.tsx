@@ -26,6 +26,8 @@ const Profile = () => {
 
   const [profileChangeSheet, setProfileChangeSheet] = useState(false);
 
+  console.log(userData)
+
   useEffect(() => {
     nav.setOptions({
       headerLeft: () => (
@@ -39,30 +41,30 @@ const Profile = () => {
               { fontSize: 22, color: Colors.unselected },
             ]}
           >
-            {userData?.username}
+            {userData?.metadata?.username}
           </Text>
           <CaretDown size={20} color="white" />
         </TouchableOpacity>
       ),
     });
-  }, [nav, userData?.username]);
+  }, [nav, userData?.metadata?.username]);
 
   return (
     <ScrollView style={styles.container} stickyHeaderIndices={[1]}>
       <View style={styles.top}>
         <View style={styles.profileImage}>
-          {userData?.profilePictureUrl == undefined ? (
+          {userData?.metadata?.profilePictureUrl == undefined ? (
             <UserCircle
               size={"100%"}
               color={Colors.borderColor}
               weight="fill"
             />
           ) : (
-            <Image source={userData.profilePictureUrl} />
+            <Image source={userData?.metadata?.profilePictureUrl} />
           )}
         </View>
         <Text style={[defaultStyles.displaynameText, { fontSize: 22 }]}>
-          {userData?.displayName}
+          {userData?.metadata?.displayName}
         </Text>
         <View
           style={{
@@ -104,7 +106,7 @@ const Profile = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <ProfileTabs />
+      <ProfileTabs posts={userData} />
       <Sheet
         orientation="bottom"
         base_height={0.2}
@@ -123,7 +125,7 @@ const Profile = () => {
             onPress={() => signOut()}
           >
             <Text style={defaultStyles.pTextD}>
-              Sign out of @{userData?.username}
+              Sign out of @{userData?.metadata?.username}
             </Text>
           </TouchableOpacity>
         </View>

@@ -37,11 +37,17 @@ export const queryUser = query({
     uid: v.string(),
   },
   handler: async (ctx, args) => {
-    const userData = await ctx.db
+    if (!args.uid) return;
+
+    const metadata = await ctx.db
       .query("users")
       .withIndex("by_clerk", (q) => q.eq("clerkId", args.uid))
-      .collect();
-    return userData;
+      .unique();
+
+    if (!metadata) return;
+    const userPosts = await ctx.db.query("posts").withIndex("userId", q => q.eq("userId", metadata?._id)).collect();
+
+    return { metadata: metadata, userPosts: userPosts };
   },
 });
 

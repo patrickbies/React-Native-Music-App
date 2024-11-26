@@ -2,8 +2,13 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { BookmarkSimple, CardsThree, Heart } from 'phosphor-react-native'
 import { Colors } from '@/constants/Colors'
+import { api } from '@/convex/_generated/api'
 
-const ProfileTabs = () => {
+type ProfileTabs = {
+  posts: typeof api.tasks.queryUser._returnType | undefined
+}
+
+const ProfileTabs = ({posts} : ProfileTabs) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
