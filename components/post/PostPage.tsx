@@ -31,12 +31,7 @@ type PostPage = {
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
-const PostPage = ({
-  posts,
-  index,
-  setIndex,
-  vis,
-}: PostPage) => {
+const PostPage = ({ posts, index, setIndex, vis }: PostPage) => {
   if (!posts || !vis) return null;
 
   const [paused, setPaused] = useState(false);
@@ -49,9 +44,14 @@ const PostPage = ({
       <FlatList
         data={posts}
         style={{ height: screenHeight * 0.2 }}
-        renderItem={({item}) => (
+        renderItem={({ item }) => (
           <View style={styles.imageContainer}>
-            <Image style={styles.image} source={item.mediaUrl} />
+            <Image
+              style={styles.image}
+              source={item.mediaUrl}
+              cachePolicy={"memory"}
+              allowDownscaling={false}
+            />
           </View>
         )}
         viewabilityConfig={{ itemVisiblePercentThreshold: 100 }}
@@ -59,6 +59,12 @@ const PostPage = ({
           e.viewableItems[0] && setIndex(e.viewableItems[0].index!)
         }
         showsHorizontalScrollIndicator={false}
+        initialScrollIndex={index} // Start the list at the given index
+        getItemLayout={(data, index) => ({
+          length: screenWidth, // Width of each item (horizontal scrolling)
+          offset: screenWidth * index,
+          index,
+        })}
         horizontal
         pagingEnabled
       />

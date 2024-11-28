@@ -1,6 +1,17 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
+export const addSearchWord = mutation({
+  args: {
+    word: v.string(),
+    isPost: v.boolean(),
+    contentId: v.union(v.id('posts'), v.id('users')),
+  },
+  handler: (ctx, args) => {
+    ctx.db.insert('search_keys', args);
+  }
+})
+
 export const isUsernameUnique = query({
   args: { username: v.string() },
   handler: async (ctx, args) => {
@@ -57,12 +68,18 @@ export const searchBar = query({
   },
   handler: async (ctx, args) => {
     // Search `users` table for username and displayName
-    const userResults = await ctx.db
-      .query("users")
-      .withSearchIndex("search_username", (q) =>
-        q.search("username", args.searchTerm)
+    const ids = await ctx.db
+      .query("search_keys")
+      .withSearchIndex("by_content", (q) =>
+        q.search("word", args.searchTerm)
       )
       .collect();
+    
+    const userResults = ids.map(async e => {
+      const result = await ctx.db.get(e.contentId);
+
+      return {isPost: e.isPost, ...result};
+    })
 
     return userResults;
   },

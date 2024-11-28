@@ -25,7 +25,7 @@ const UploadSong = () => {
   const { hideLoading, showLoading } = useLoading();
   const {height: screenHeight} = Dimensions.get('screen')
   const conv = useConvex();
-  const userId = useUID().userData?._id;
+  const userId = useUID().userData?.metadata._id;
   const nav = useNavigation();
 
   const animatedPadding = useAnimatedKeyboard()
@@ -52,13 +52,19 @@ const UploadSong = () => {
 
     const uri = await conv.query(api.upload_post.getDownloadUrl, {storageId: storageId})
 
-    await conv.mutation(api.upload_post.post, {
+    const postId = await conv.mutation(api.upload_post.post, {
       gifBackground: false,
       mediaUrl: uri!,
       mediaId: storageId,
       name: title,
       userId: userId!
     });
+
+    await conv.mutation(api.tasks.addSearchWord, {
+      contentId: postId,
+      isPost: true,
+      word: title
+    })
 
     hideLoading();
     router.replace('/(home)/(feed)')

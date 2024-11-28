@@ -51,7 +51,6 @@ export default defineSchema({
   search_keys: defineTable({
     word: v.string(),
     isPost: v.boolean(),
-    postId: v.optional(v.id('posts')),
-    userId: v.optional(v.id('users'))
+    contentId: v.union(v.id('posts'), v.id('users')),
   }).searchIndex('by_content', {searchField: "word"}),
 });

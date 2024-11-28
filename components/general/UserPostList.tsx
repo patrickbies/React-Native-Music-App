@@ -1,6 +1,5 @@
 import {
   Dimensions,
-  FlatList,
   LayoutRectangle,
   Modal,
   StyleSheet,
@@ -9,31 +8,27 @@ import {
   View,
 } from "react-native";
 import React, { useRef, useState } from "react";
-import ProfileHeader from "./ProfileHeader";
-import ProfileTabs from "./ProfileTabs";
-import { api } from "@/convex/_generated/api";
-import { Colors } from "@/constants/Colors";
-import { Image } from "expo-image";
 import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { defaultStyles } from "@/constants/Styles";
 import { Id } from "@/convex/_generated/dataModel";
 import {
+  FlatList,
   Gesture,
   GestureDetector,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
+import { Image } from "expo-image";
+import { defaultStyles } from "@/constants/Styles";
+import { Href, router } from "expo-router";
+import { Colors } from "@/constants/Colors";
 import PostPage from "../post/PostPage";
 
-type ProfilePage = {
-  userData: typeof api.tasks.queryUser._returnType;
-};
-
 type post = {
+  isPost: boolean;
   _id: Id<"posts">;
   _creationTime: number;
   createdAt: number;
@@ -47,10 +42,30 @@ type post = {
   mediaId: string;
 };
 
+type user = {
+  isPost: boolean;
+  _id: Id<"users">;
+  _creationTime: number;
+  profilePictureUrl?: string | undefined;
+  profilePictureId?: string | undefined;
+  createdAt: number;
+  username: string;
+  displayName: string;
+  email: string;
+  clerkId: string;
+};
+
+type combination = post | user;
+
+type ProfilePage = {
+  posts: combination[];
+  listHeader: React.ReactNode;
+};
+
 const { width: sw, height: sh } = Dimensions.get("screen");
 const animateDuration = 500;
 
-const ProfilePage = ({ userData }: ProfilePage) => {
+const UserPostList = ({ posts, listHeader }: ProfilePage) => {
   const refs = useRef<Record<Id<"posts">, View>>({});
   const [index, setIndex] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
@@ -83,12 +98,16 @@ const ProfilePage = ({ userData }: ProfilePage) => {
 
   const handleClose = () => {
     let fromSize = {
-      x: 0, y: 0, width: 0, height: 0
-    }
-    if(userData)
-    refs.current[userData.userPosts[index]._id].measureInWindow((x, y, width, height) => {
-      fromSize = {x: x, y: y, width: width, height: height}
-    })
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+    };
+    refs.current[posts[index]._id as Id<"posts">].measureInWindow(
+      (x, y, width, height) => {
+        fromSize = { x: x, y: y, width: width, height: height };
+      }
+    );
 
     dim.value = withTiming(
       {
@@ -139,33 +158,60 @@ const ProfilePage = ({ userData }: ProfilePage) => {
       });
     });
 
-  const renderItem = (item: post, index: number) => (
-    <TouchableOpacity
-      ref={(ref) => {
-        if (ref) refs.current[item._id] = ref;
-      }}
-      style={styles.preview}
-      onPress={() => handlePress(item, index)}
-    >
-      <Image source={item.mediaUrl} style={styles.image} />
-      <Text style={defaultStyles.pTextM}>{item.name}</Text>
-    </TouchableOpacity>
-  );
+  const renderItem = (item: post | user, index: number) => {
+    if (item.isPost)
+      return (
+        <TouchableOpacity
+          ref={(ref) => {
+            if (ref) refs.current[item._id as Id<"posts">] = ref;
+          }}
+          style={styles.preview}
+          onPress={() => handlePress(item as post, index)}
+        >
+          <Image source={(item as post).mediaUrl} style={styles.image} />
+          <Text style={defaultStyles.pTextM}>{(item as post).name}</Text>
+        </TouchableOpacity>
+      );
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          router.navigate(`/(pages)/(profile)/${(item as user).clerkId}` as Href);
+        }}
+        style={{
+          width: "45%",
+          marginTop: "3.33%",
+          marginLeft: "3.33%",
+        }}
+      >
+        <View
+          style={{
+            width: '100%',
+            aspectRatio: 1,
+            borderRadius: 100,
+            backgroundColor: Colors.lightBg,
+          }}
+        />
+        <View style={{ alignItems: "center" }}>
+          <Text style={defaultStyles.usernameText}>{(item as user).displayName}</Text>
+          <Text
+            style={[defaultStyles.usernameText, { color: Colors.borderColor }]}
+          >
+            @{(item as user).username}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={{ flex: 1 }}>
       <FlatList
-        data={userData?.userPosts}
+        data={posts}
         renderItem={({ item, index }) => renderItem(item, index)}
         style={styles.container}
         numColumns={2}
         onLayout={(e) => {}}
-        ListHeaderComponent={() => (
-          <>
-            <ProfileHeader metadata={userData?.metadata} />
-            <ProfileTabs />
-          </>
-        )}
+        ListHeaderComponent={() => listHeader}
       />
       {/* Make the animation to fullscreen here: */}
       <Modal
@@ -178,15 +224,15 @@ const ProfilePage = ({ userData }: ProfilePage) => {
           <GestureDetector gesture={pan}>
             <Animated.View
               style={[
-                { position: "absolute", borderRadius: 20, overflow: 'hidden' },
+                { position: "absolute", borderRadius: 20, overflow: "hidden" },
                 animatedScreen,
               ]}
             >
               <PostPage
-                index={index}
-                posts={userData?.userPosts}
+                index={0}
+                posts={[posts[index] as post]}
                 vis={modalVisible}
-                setIndex={setIndex}
+                setIndex={() => {}}
               />
             </Animated.View>
           </GestureDetector>
@@ -196,7 +242,7 @@ const ProfilePage = ({ userData }: ProfilePage) => {
   );
 };
 
-export default ProfilePage;
+export default UserPostList;
 
 const styles = StyleSheet.create({
   container: {
