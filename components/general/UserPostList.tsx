@@ -220,7 +220,6 @@ const UserPostList = ({ posts, listHeader }: ProfilePage) => {
         animationType="none" // Disable default animations
         onRequestClose={() => handleClose()}
       >
-        <GestureHandlerRootView>
           <GestureDetector gesture={pan}>
             <Animated.View
               style={[
@@ -236,7 +235,6 @@ const UserPostList = ({ posts, listHeader }: ProfilePage) => {
               />
             </Animated.View>
           </GestureDetector>
-        </GestureHandlerRootView>
       </Modal>
     </View>
   );

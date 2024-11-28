@@ -17,6 +17,7 @@ import { useConvex } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { defaultStyles } from "@/constants/Styles";
 import { useUser } from "@clerk/clerk-expo";
+import UserPostList from "@/components/general/UserPostList";
 
 const Search = () => {
   const screenWidth = Dimensions.get("screen").width;
@@ -24,7 +25,6 @@ const Search = () => {
   const elementWidth = (screenWidth - 3 * paddingHorizontal) / 2;
 
   const { top: safeTop, bottom: safeBottom } = useSafeAreaInsets();
-  const { user } = useUser();
   const conv = useConvex();
   const [results, setResults] =
     useState<typeof api.tasks.searchBar._returnType>();
@@ -52,53 +52,10 @@ const Search = () => {
   return (
     <View style={[styles.container, { paddingTop: safeTop }]}>
       {header()}
-      <FlatList
-        data={results}
-        renderItem={(e) => (
-          <TouchableOpacity
-            onPress={() => {
-              router.navigate(`/(pages)/(profile)/${e.item.clerkId}` as Href);
-            }}
-            style={{
-              width: elementWidth,
-              alignItems: "center",
-              gap: 10,
-              marginTop: "5%",
-            }}
-          >
-            <View
-              style={{
-                width: elementWidth,
-                aspectRatio: 1,
-                borderRadius: 100,
-                backgroundColor: Colors.lightBg,
-              }}
-            />
-            <View style={{ alignItems: "center" }}>
-              <Text style={defaultStyles.usernameText}>
-                {e.item.displayName}
-              </Text>
-              <Text
-                style={[
-                  defaultStyles.usernameText,
-                  { color: Colors.borderColor },
-                ]}
-              >
-                @{e.item.username}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
-        numColumns={2}
-        columnWrapperStyle={{
-          justifyContent: "space-between", 
-          marginHorizontal: paddingHorizontal,
-        }}
-        keyExtractor={(item) => item._id}
-        contentContainerStyle={{
-          paddingBottom: safeBottom,
-        }}
-      />
+      {results && <UserPostList 
+        listHeader={<></>}
+        posts={results} 
+      />}
     </View>
   );
 };

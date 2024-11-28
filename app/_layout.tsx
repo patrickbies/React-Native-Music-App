@@ -8,6 +8,7 @@ import LoadingOverlay from "@/components/loading/LoadingOverlay";
 import { setStatusBarStyle, StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { UIDProvider } from "@/context/UIDContext";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
@@ -71,16 +72,18 @@ export default function RootLayout() {
   }
 
   return (
-    <LoadingProvider>
-      <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
-        <ConvexProvider client={convex}>
-          <UIDProvider>
-            <StatusBar style="light" />
-            <LoadingOverlay />
-            <InitialLayout />
-          </UIDProvider>
-        </ConvexProvider>
-      </ClerkProvider>
-    </LoadingProvider>
+    <GestureHandlerRootView>
+      <LoadingProvider>
+        <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
+          <ConvexProvider client={convex}>
+            <UIDProvider>
+              <StatusBar style="light" />
+              <LoadingOverlay />
+              <InitialLayout />
+            </UIDProvider>
+          </ConvexProvider>
+        </ClerkProvider>
+      </LoadingProvider>
+    </GestureHandlerRootView>
   );
 }
