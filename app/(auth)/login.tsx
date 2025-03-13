@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     paddingHorizontal: "5%",
-    paddingTop: "20%",
+    paddingTop: "10%",
     gap: 20,
   },
   buttonContainer: {
